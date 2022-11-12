@@ -12,4 +12,8 @@
       <PackageReference Include="NUnit3TestAdapter" Version="4.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\DockerWebAPI.Pulumi\DockerWebAPI.Pulumi.csproj" />
+    </ItemGroup>
+
 </Project>

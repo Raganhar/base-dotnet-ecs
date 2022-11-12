@@ -148,8 +148,8 @@ class StandardPulumiEcs : Stack
         var appTask = new Ecs.TaskDefinition($"{serviceName}-app-task", new Ecs.TaskDefinitionArgs
         {
             Family = $"{serviceName}-task-definition",
-            Cpu = "256",
-            Memory = "512",
+            Cpu = CpuHelper.ContainerSize.cpu05_1024.ToCpuUnits().ToString(),
+            Memory = CpuHelper.ContainerSize.cpu05_1024.ToMemory().ToString(),
             NetworkMode = "awsvpc",
             RequiresCompatibilities = { "FARGATE" },
             ExecutionRoleArn = taskExecRole.Arn,
@@ -175,7 +175,7 @@ class StandardPulumiEcs : Stack
         var appSvc = new Ecs.Service($"{serviceName}-app-svc", new Ecs.ServiceArgs
         {
             Cluster = cluster.Arn,
-            DesiredCount = 3,
+            DesiredCount = 1,
             LaunchType = "FARGATE",
             TaskDefinition = appTask.Arn,
             NetworkConfiguration = new Ecs.Inputs.ServiceNetworkConfigurationArgs
