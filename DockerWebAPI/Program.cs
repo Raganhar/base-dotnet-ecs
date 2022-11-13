@@ -5,11 +5,18 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using HealthChecks.Aws.S3;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// var _conf = builder.Configuration;
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.Seq("http://localhost:5341")
+    .Enrich.FromLogContext().Enrich.WithProperty("appName", "sampleapp")
+    .CreateLogger();
+
+builder.Logging.AddSerilog();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -19,36 +26,25 @@ builder.Services.AddHealthChecksUI(x =>
     x.AddHealthCheckEndpoint("default api", "/healthz"); //map health check api
 }).AddInMemoryStorage();
 builder.Services.AddHealthChecks()
-    .AddMySql(
-        "Server=asdasd-cluster.cluster-cylctavxxdxn.eu-central-1.rds.amazonaws.com;Port=3306;Uid=admin_master;Pwd=ssdasdasd;")
-    .AddS3(options =>
-    {
-        options.BucketName = "sdsdgsd-files";
-        options.S3Config = new AmazonS3Config
-        {
-            RegionEndpoint = RegionEndpoint.EUCentral1,
-        };
-        options.AccessKey = "sdgdfgdfg";
-        options.SecretKey = "dfgdfhfdhd";
-    })
+    // .AddMySql(
+    //     "Server=asdasd-cluster.cluster-cylctavxxdxn.eu-central-1.rds.amazonaws.com;Port=3306;Uid=admin_master;Pwd=ssdasdasd;")
+    // .AddS3(options =>
+    // {
+    //     options.BucketName = "sdsdgsd-files";
+    //     options.S3Config = new AmazonS3Config
+    //     {
+    //         RegionEndpoint = RegionEndpoint.EUCentral1,
+    //     };
+    //     options.AccessKey = "sdgdfgdfg";
+    //     options.SecretKey = "dfgdfhfdhd";
+    // })
     ;
-// .AddCheck("Sample", () => HealthCheckResult.Degraded("A healthy result."));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
     app.UseSwagger();
     app.UseSwaggerUI();
-// }
 
-// app.UseHttpsRedirection();
-
-// You could customize the endpoint
-    // app.UseHealthChecksPrometheusExporter("/my-health-metrics");
-
-// Customize HTTP status code returned(prometheus will not read health metrics when a default HTTP 503 is returned)
     app.UseHealthChecksPrometheusExporter("/my-health-metrics",
         options => options.ResultStatusCodes[HealthStatus.Unhealthy] = (int)HttpStatusCode.OK);
     app.UseAuthorization();
