@@ -7,10 +7,12 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using HealthChecks.Aws.S3;
 using Serilog;
 using Serilog.Core.Enrichers;
+using Serilog.Enrichers.Span;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
+    .Enrich.WithSpan()
     .Enrich.WithProperty("appName", "sampleapp")
     .WriteTo.Seq("http://localhost:5341")
     .CreateLogger();
