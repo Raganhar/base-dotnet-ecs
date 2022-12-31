@@ -13,7 +13,7 @@
         "operationId": "GetWeatherForecast",
         "parameters": [
           {
-            "name": "asdasd",
+            "name": "aa",
             "in": "query",
             "schema": {
               "type": "integer",

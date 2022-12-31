@@ -11,4 +11,12 @@ public class SmokeTest
     {
         Console.WriteLine(cpus.ToCpuUnits());
     }
+    
+    [Test]
+    public void Sasdmoke([Values]CpuSize cpus)
+    {
+        Console.WriteLine(cpus.ToCpuUnits());
+    }
+    
+    
 }
