@@ -13,9 +13,10 @@ public class SmokeTest
     }
     
     [Test]
+    [Ignore("just checking stuff")]
     public void Sasdmoke([Values]CpuSize cpus)
     {
-        Console.WriteLine(cpus.ToCpuUnits());
+        new auctionsdk.Client(null, null).GetWeatherForecastAsync(null);
     }
     
     
